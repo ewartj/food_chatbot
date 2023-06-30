@@ -1,4 +1,7 @@
 from foodbert.food_extractor.food_model import FoodModel
+from constants import const
+import requests
+import json
 model = FoodModel("chambliss/distilbert-for-food-extraction")
 
 # examples = """3 tablespoons (21 grams) blanched almond flour
@@ -42,5 +45,22 @@ for i in food:
     if ingredient_tag > 0:
         print(ingredient_tag)
         for j, k in enumerate(i['Ingredient']):
-            print(i['Ingredient'][j]["text"])
+            ingredients.append(i['Ingredient'][j]["text"])
+
 print(ingredients)
+
+query = str(ingredients)
+
+appid = const["appid"]
+api_key = const["api_key"]
+
+url = 'https://api.edamam.com/search?q=' + query + '&app_id=' + \
+              appid + '&app_key=' + \
+              api_key
+
+r = requests.get(url)
+data = r.json()
+
+with open('data.json', 'w') as f:
+    json.dump(data, f)
+
