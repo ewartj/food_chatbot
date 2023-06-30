@@ -47,7 +47,7 @@ for i in food:
         for j, k in enumerate(i['Ingredient']):
             ingredients.append(i['Ingredient'][j]["text"])
 
-print(ingredients)
+# print(ingredients)
 
 query = str(ingredients)
 
@@ -63,4 +63,16 @@ data = r.json()
 
 with open('data.json', 'w') as f:
     json.dump(data, f)
+
+
+with open("data.json", "r") as read_file:
+    data = json.load(read_file)
+
+print(data.keys())
+print(data["count"])
+print(data["hits"][0]['recipe'].keys())
+print(data["hits"][0]['recipe']["label"])
+print(data["hits"][0]['recipe']["source"])
+print(data["hits"][0]['recipe']["url"])
+print(data["hits"][0]['recipe']["cautions"])
 
