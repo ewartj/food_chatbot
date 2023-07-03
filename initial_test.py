@@ -5,7 +5,7 @@ import json
 import re
 model = FoodModel("chambliss/distilbert-for-food-extraction")
 
-
+#https://codereview.stackexchange.com/questions/280040/asking-multiple-choice-questions-in-python-using-an-api
 def split(txt, seps):
     # https://stackoverflow.com/questions/4697006/python-split-string-by-list-of-separators
     default_sep = seps[0]
@@ -46,88 +46,32 @@ def query_food_api(query, appid, api_key):
 def get_recipe_info(data):
     recipes_dict = {}
     total_matches = data["count"]
+    if total_matches > 10:
+        total_matches = 10
+    print(total_matches)
     for i in range(0, total_matches):
-        recipes_dict[data["hits"][0]['recipe']["label"]] = {
-            "source":data["hits"][0]['recipe']["source"],
-            "url":data["hits"][0]['recipe']["url"],
-            "cautions":data["hits"][0]['recipe']["cautions"]
+        recipes_dict[data["hits"][i]['recipe']["label"]] = {
+            "source":data["hits"][i]['recipe']["source"],
+            "url":data["hits"][i]['recipe']["url"],
+            "cautions":data["hits"][i]['recipe']["cautions"]
         }
     return recipes_dict
      
 seps = (',', ';', ' ', '|')
 
-# user_ingredients = input("Please provide ingredients:")
-# food = split(user_ingredients, seps)
-# print(food)
-# ingrediants = model.extract_foods(food)
-# print(ingrediants)
-# ingredients_identified  = get_ingredients(ingrediants)
-# print(ingredients_identified)
-# appid = const["appid"]
-# api_key = const["api_key"]
-# data = query_food_api(ingredients_identified, appid, api_key)
+user_ingredients = input("Please provide ingredients:")
+food = split(user_ingredients, seps)
+print(food)
+ingrediants = model.extract_foods(food)
+print(ingrediants)
+ingredients_identified  = get_ingredients(ingrediants)
+print(ingredients_identified)
+appid = const["appid"]
+api_key = const["api_key"]
+data = query_food_api(ingredients_identified, appid, api_key)
 # with open('data.json', 'w') as f:
 #         json.dump(data, f)
-# # with open("data.json", "r") as read_file:
-# #     data = json.load(read_file)
-# output_data = get_recipe_info(data)
-# print(output_data)
-
-
-with open("data.json", "r") as read_file:
-    data = json.load(read_file)
-
-
-print(data.keys())
-print(data["count"])
-print(data["hits"][0]['recipe'].keys())
-print(data["hits"][0]['recipe']["label"])
-print(data["hits"][0]['recipe']["source"])
-print(data["hits"][0]['recipe']["url"])
-print(data["hits"][0]['recipe']["cautions"])
-
-if data["count"] > 10:
-    total_count = 10
-for i in range(0,total_count):
-    print(data["hits"][i]['recipe']["label"])
-
-# query = ["peppers","rice","chicken"]
-# query = str(query)
-# appid = const["appid"]
-# api_key = const["api_key"]
-# url = 'https://api.edamam.com/search?q=' + query + '&app_id=' + \
-#             appid + '&app_key=' + \
-#             api_key
-
-
-# url = "https://api.edamam.com/search" #"https://edamam-food-and-grocery-database.p.rapidapi.com/parser"
-# headers = {"Content-Type": "application/json"}
-# parameters = {
-#     'q':query,
-#     'app_id': const["appid"],
-#     'app_key': const["api_key"]
-#     }
-# response = requests.get(
-#         'https://api.edamam.com/api/recipes/v2',
-#         headers={'Accept': 'application/json'},
-#         params={
-#             'app_id': const["appid"],
-#             'app_key': const["api_key"],
-#             'q': query
-#             # 'type': 'any',
-#             # 'mealType': meal_type,
-#             # 'health': health_restriction,
-            
-#         }
-# r = requests.get(
-#         'https://api.edamam.com/api/recipes/v2',
-#         headers={'Accept': 'application/json'},
-#         params={
-#             'app_id': const["appid"],
-#             'app_key': const["api_key"],
-#             'type': 'any',
-#             'q': query
-#         })
-# data = r.json()
-# with open('data2.json', 'w') as f:
-#          json.dump(data, f)
+# with open("data.json", "r") as read_file:
+#     data = json.load(read_file)
+output_data = get_recipe_info(data)
+print(output_data)
