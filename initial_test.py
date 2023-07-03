@@ -2,6 +2,7 @@ from foodbert.food_extractor.food_model import FoodModel
 from constants import const
 import requests
 import json
+import re
 model = FoodModel("chambliss/distilbert-for-food-extraction")
 
 # examples = """3 tablespoons (21 grams) blanched almond flour
@@ -38,41 +39,85 @@ examples = [x for x in examples if x]
 food = model.extract_foods(examples)
 
 # print(food)
-ingredients = []
 
-for i in food:
-    ingredient_tag = len(i['Ingredient'])
-    if ingredient_tag > 0:
-        print(ingredient_tag)
-        for j, k in enumerate(i['Ingredient']):
-            ingredients.append(i['Ingredient'][j]["text"])
+def split(txt, seps):
+    # https://stackoverflow.com/questions/4697006/python-split-string-by-list-of-separators
+    default_sep = seps[0]
 
-# print(ingredients)
-
-query = str(ingredients)
-
-appid = const["appid"]
-api_key = const["api_key"]
-
-url = 'https://api.edamam.com/search?q=' + query + '&app_id=' + \
-              appid + '&app_key=' + \
-              api_key
-
-r = requests.get(url)
-data = r.json()
-
-with open('data.json', 'w') as f:
-    json.dump(data, f)
+    # we skip seps[0] because that's the default separator
+    for sep in seps[1:]:
+        txt = txt.replace(sep, default_sep)
+    return [i.strip() for i in txt.split(default_sep)]
 
 
-with open("data.json", "r") as read_file:
-    data = json.load(read_file)
+def get_ingredients(food):
+    ingredients = []
+    for i in food:
+        print(i)
+        ingredient_tag = len(i['Ingredient'])
+        if ingredient_tag > 0:
+            print(ingredient_tag)
+            for j, k in enumerate(i['Ingredient']):
+                ingredients.append(i['Ingredient'][j]["text"])
+    return ingredients
 
-print(data.keys())
-print(data["count"])
-print(data["hits"][0]['recipe'].keys())
-print(data["hits"][0]['recipe']["label"])
-print(data["hits"][0]['recipe']["source"])
-print(data["hits"][0]['recipe']["url"])
-print(data["hits"][0]['recipe']["cautions"])
 
+def query_food_api(query):
+    query = str(query)
+    appid = const["appid"]
+    api_key = const["api_key"]
+    url = 'https://api.edamam.com/search?q=' + query + '&app_id=' + \
+                appid + '&app_key=' + \
+                api_key
+    r = requests.get(url)
+    data = r.json()
+    return data
+
+
+# with open('data.json', 'w') as f:
+#         json.dump(data, f)
+# with open("data.json", "r") as read_file:
+#     data = json.load(read_file)
+
+
+def get_recipe_info(data):
+    recipes_dict = {}
+    total_matches = data["count"]
+    for i in range(0, total_matches):
+        recipes_dict[data["hits"][0]['recipe']["label"]] = {
+            "source":data["hits"][0]['recipe']["source"],
+            "url":data["hits"][0]['recipe']["url"],
+            "cautions":data["hits"][0]['recipe']["cautions"]
+        }
+    return recipes_dict
+     
+    
+# print(data.keys())
+# print(data["count"])
+# print(data["hits"][0]['recipe'].keys())
+# print(data["hits"][0]['recipe']["label"])
+# print(data["hits"][0]['recipe']["source"])
+# print(data["hits"][0]['recipe']["url"])
+# print(data["hits"][0]['recipe']["cautions"])
+
+seps = (',', ';', ' ', '|')
+
+user_ingredients = input("Please provide ingredients:")
+food = split(user_ingredients, seps)
+print(food)
+ingrediants = model.extract_foods(food)
+print(ingrediants)
+ingredients_identified  = get_ingredients(ingrediants)
+print(ingredients_identified)
+data = query_food_api(ingredients_identified)
+# with open('data.json', 'w') as f:
+#         json.dump(data, f)
+# with open("data.json", "r") as read_file:
+#     data = json.load(read_file)
+output_data = get_recipe_info(data)
+print(output_data)
+
+
+
+
+# query = str(ingredients)
