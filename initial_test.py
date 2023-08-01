@@ -7,6 +7,13 @@ model = FoodModel("chambliss/distilbert-for-food-extraction")
 
 #https://codereview.stackexchange.com/questions/280040/asking-multiple-choice-questions-in-python-using-an-api
 
+def check_if_ingredient(query):
+    print(f"query: {query}")
+    ing = model.extract_foods(query)
+    print(ing)
+    if len(ing[['Ingredient']]) > 0:
+        return True
+
 class Recipes:
     def __init__(self, appid, api_key):
         self.appid = appid
@@ -112,21 +119,21 @@ class Chatbot:
     def return_results(self):
         print(self.output)
 
-seps = (',', ';', ' ', '|')
+# seps = (',', ';', ' ', '|')
 
-user_ingredients = input("Please provide ingredients:")
-food = split(user_ingredients, seps)
-print(food)
-ingrediants = model.extract_foods(food)
-print(ingrediants)
-ingredients_identified  = get_ingredients(ingrediants)
-print(ingredients_identified)
-appid = const["appid"]
-api_key = const["api_key"]
-data = query_food_api(ingredients_identified, appid, api_key)
-# with open('data.json', 'w') as f:
-#         json.dump(data, f)
-# with open("data.json", "r") as read_file:
-#     data = json.load(read_file)
-output_data = get_recipe_info(data)
-print(output_data)
+# user_ingredients = input("Please provide ingredients:")
+# food = split(user_ingredients, seps)
+# print(food)
+# ingrediants = model.extract_foods(food)
+# print(ingrediants)
+# ingredients_identified  = get_ingredients(ingrediants)
+# print(ingredients_identified)
+# appid = const["appid"]
+# api_key = const["api_key"]
+# data = query_food_api(ingredients_identified, appid, api_key)
+# # with open('data.json', 'w') as f:
+# #         json.dump(data, f)
+# # with open("data.json", "r") as read_file:
+# #     data = json.load(read_file)
+# output_data = get_recipe_info(data)
+# print(output_data)
