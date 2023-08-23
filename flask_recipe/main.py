@@ -68,15 +68,23 @@ def recipe():
         ingrediants = model.extract_foods(data)
         ingredients_identified = get_ingredients(ingrediants)
         data = query_food_api(ingredients_identified, appid, api_key)
-        output_data = pd.json_normalize(data["hits"], max_level=2)
-        # print(output_data)
-        return redirect(url_for('result', output_data=output_data))
+        df = pd.json_normalize(data["hits"], max_level=2)
+        output_data = df[["recipe.label","recipe.source","recipe.url","recipe.cautions",
+          "recipe.ingredientLines","recipe.cuisineType",
+          "recipe.mealType","recipe.dishType"]]
+        output_data.to_csv("db.csv")
+        return redirect(url_for('result'))
     return render_template('recipe.html', form=form)
 
 @app.route("/result", methods=['GET', 'POST'])
 def result():
-    result = request.args.get("output_data", None)
     return render_template("result.html", result=result)
+
+@app.route("/result_db", methods=['GET', 'POST'])
+def result_db():
+    output_data = pd.read_csv("db.csv")
+    output_json = output_data.to_json(orient='table',index=False)
+    return output_json
 
 def get_ingredients(food):
     ingredients = []

@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 import json
 import re
-model = FoodModel("chambliss/distilbert-for-food-extraction")
+# model = FoodModel("chambliss/distilbert-for-food-extraction")
 
 
 def split(txt, seps):
@@ -57,16 +57,16 @@ def get_recipe_info(data):
      
 seps = (',', ';', ' ', '|')
 
-user_ingredients = input("Please provide ingredients:")
+# user_ingredients = input("Please provide ingredients:")
 # food = split(user_ingredients, seps)
 # print(food)
-ingrediants = model.extract_foods(user_ingredients)
-print(ingrediants)
-ingredients_identified  = get_ingredients(ingrediants)
-print(ingredients_identified)
-appid = const["appid"]
-api_key = const["api_key"]
-data = query_food_api(ingredients_identified, appid, api_key)
+# ingrediants = model.extract_foods(user_ingredients)
+# print(ingrediants)
+# ingredients_identified  = get_ingredients(ingrediants)
+# print(ingredients_identified)
+# appid = const["appid"]
+# api_key = const["api_key"]
+# data = query_food_api(ingredients_identified, appid, api_key)
 # print(data)
 # with open('data.json', 'w') as f:
 #         json.dump(data, f)
@@ -88,10 +88,18 @@ data = query_food_api(ingredients_identified, appid, api_key)
 # print(data["hits"][0]['recipe']["url"])
 # print(data["hits"][0]['recipe']["cautions"])
 
-data2 = data["hits"]
-df = pd.json_normalize(data2, max_level=2)
-df.to_csv("test.csv")
-print(df)
+# data2 = data["hits"]
+# df = pd.json_normalize(data2, max_level=2)
+# df.to_csv("test.csv")
+# print(df)
+
+df = pd.read_csv("test.csv")
+df2 = df[["recipe.label","recipe.source","recipe.url","recipe.cautions",
+          "recipe.ingredientLines","recipe.cuisineType",
+          "recipe.mealType","recipe.dishType"]]
+print(df.head())
+print(df2.head())
+
 
 total_count = 10
 # if data["count"] > 10:

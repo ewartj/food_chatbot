@@ -1,9 +1,53 @@
 <html>
-  <head></head>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+  </head>
   <body>
-    <h3>Booking page</h3>
-    <p>
-      {{ result }}
-    </p>
+    <!-- recipe.label,recipe.source,recipe.url,recipe.cautions,recipe.ingredientLines,recipe.cuisineType,recipe.mealType,recipe.dishType -->
+    <table id="log" class="display" style="width:95%">
+            <tr>
+                <th>label</th>
+                <th>source</th>
+                <th>url</th>
+                <th>cautions</th>
+                <th>ingredients</th>
+                <th>cuisine type</th>
+                <th>meal type</th>
+                <th>dish type</th>
+            </tr>
+        </table>
+        <script>
+            function setupData() {
+                $(document).ready(function () {
+                    $('#log').DataTable({
+                        "paging":   true,
+                        "searching": true,
+                        "ajax": {
+                            "url": "/result_db",
+                            "dataType": "json",
+                            "dataSrc": "data",
+                            "contentType":"application/json"
+                        },
+                        "columns": [
+                            {"data": "recipe.label"},
+                            {"data": "recipe.source"},
+                            {"data": "recipe.url"},
+                            {"data": "recipe.cautions"},
+                            {"data": "recipe.ingredientLines"},
+                            {"data": "recipe.cuisineType"},
+                            {"data": "recipe.mealType"},
+                            {"data": "recipe.dishType"}
+                        ],
+                        "columnDefs": [
+                    {"className": "dt-left", "targets": "_all"}
+                    ],
+                    });
+                });
+            }
+            $( window ).on( "load", setupData );
+    </script> 
   </body>
 </html>
