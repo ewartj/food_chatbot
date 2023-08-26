@@ -1,13 +1,15 @@
-<html>
-  <head>
+{% extends "base.html" %}
+
+{% block content %}
+<head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.18/css/jquery.dataTables.min.css"/>
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
   </head>
   <body>
-    <!-- recipe.label,recipe.source,recipe.url,recipe.cautions,recipe.ingredientLines,recipe.cuisineType,recipe.mealType,recipe.dishType -->
-    <table id="log" class="display" style="width:95%">
+    <h2>This is what we found</h2>
+        <table id="result" class="display" style="width:95%" class="cell-border compact stripe">
             <tr>
                 <th>label</th>
                 <th>source</th>
@@ -22,7 +24,7 @@
         <script>
             function setupData() {
                 $(document).ready(function () {
-                    $('#log').DataTable({
+                    $('#result').DataTable({
                         "paging":   true,
                         "searching": true,
                         "ajax": {
@@ -32,14 +34,25 @@
                             "contentType":"application/json"
                         },
                         "columns": [
-                            {"data": "recipe.label"},
-                            {"data": "recipe.source"},
-                            {"data": "recipe.url"},
-                            {"data": "recipe.cautions"},
-                            {"data": "recipe.ingredientLines"},
-                            {"data": "recipe.cuisineType"},
-                            {"data": "recipe.mealType"},
-                            {"data": "recipe.dishType"}
+                            {"data": "label",
+                            "title": "label"},
+                            {"data": "source",
+                            "title": "source"},
+                            {"data": "url",
+                            "title": "url",
+                            "render": function (data, type, row, meta) {
+                            return '<a href="' + data + '">' + data + '</a>';
+                            }},
+                            {"data": "cautions",
+                            "title": "cautions"},
+                            {"data": "ingredientLines",
+                            "title": "ingredientLines"},
+                            {"data": "cuisineType",
+                            "title": "cuisineType"},
+                            {"data": "mealType",
+                            "title": "mealType"},
+                            {"data": "dishType",
+                            "title": "dishType"}
                         ],
                         "columnDefs": [
                     {"className": "dt-left", "targets": "_all"}
@@ -50,4 +63,4 @@
             $( window ).on( "load", setupData );
     </script> 
   </body>
-</html>
+{% endblock %}

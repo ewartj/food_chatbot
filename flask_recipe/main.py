@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from chatterbot import ChatBot
-from chatterbot.trainers import ListTrainer
+from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
 from form import RecipeForm
 from initial_test import Recipes, check_if_ingredient
 from constants import const
@@ -27,6 +27,8 @@ for knowledeg in os.listdir('base'):
 'Would you like a chat',
 "Yes"
 ])
+    
+
 
 appid = const["appid"]
 api_key = const["api_key"]
@@ -69,22 +71,50 @@ def recipe():
         ingredients_identified = get_ingredients(ingrediants)
         data = query_food_api(ingredients_identified, appid, api_key)
         df = pd.json_normalize(data["hits"], max_level=2)
-        output_data = df[["recipe.label","recipe.source","recipe.url","recipe.cautions",
-          "recipe.ingredientLines","recipe.cuisineType",
-          "recipe.mealType","recipe.dishType"]]
-        output_data.to_csv("db.csv")
-        return redirect(url_for('result'))
+        try:
+            output_data = df[["recipe.label","recipe.source","recipe.url","recipe.cautions",
+            "recipe.ingredientLines","recipe.cuisineType",
+            "recipe.mealType","recipe.dishType"]]
+            output_data.rename(columns=lambda x: x.replace("recipe.",""), inplace=True)
+            output_data.reset_index(inplace=True)
+            output_data.to_csv("db.csv")
+            return redirect(url_for('result'))
+        except:
+             return redirect(url_for('none'))
     return render_template('recipe.html', form=form)
 
 @app.route("/result", methods=['GET', 'POST'])
 def result():
     return render_template("result.html", result=result)
 
+@app.route("/none", methods=['GET', 'POST'])
+def none():
+    return render_template("none.html")
+
 @app.route("/result_db", methods=['GET', 'POST'])
 def result_db():
     output_data = pd.read_csv("db.csv")
     output_json = output_data.to_json(orient='table',index=False)
     return output_json
+
+# bot_full = ChatBot('Full')
+# trainer = ChatterBotCorpusTrainer(bot_full)
+# trainer.train("chatterbot.corpus.english")
+
+# @app.route('/full')
+# def full():
+# 	return render_template('full.html')
+
+# @app.route('/process_full',methods=['POST'])
+# def process_full():
+#     user_input=request.form['user_input']
+#     print(user_input)
+#     bot_response=bot_full.get_response(user_input)
+#     bot_response=str(bot_response)
+#     print("Friend: "+bot_response)
+#     return render_template('full.html',user_input=user_input,
+# 		bot_response=bot_response
+# 		)
 
 def get_ingredients(food):
     ingredients = []
