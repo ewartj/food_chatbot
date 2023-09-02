@@ -38,16 +38,22 @@ def index():
 
 @app.route('/process',methods=['POST'])
 def process():
-	user_input=request.form['user_input']
-	print(user_input)
-	if user_input == "yes":
-		print("Hiiiii")
-		return redirect('/recipe')
+    old_responce = ""
+    if os.path.exists("Output.txt"):
+        with open('Output.txt', 'r') as file:
+            old_responce = file.read().rstrip()
+    user_input=request.form['user_input']
+    print(user_input)
+    if user_input == "yes" and old_responce == "Hi. Do you need help to find a recipe?":
+        return redirect('/recipe')
+    if user_input == "yes" and old_responce == "Would you like a chat":
+        return redirect('/chat')
 
-	bot_response=bot.get_response(user_input)
-	bot_response=str(bot_response)
-	print("Friend: "+bot_response)
-	return render_template('index.html',user_input=user_input,
+    bot_response=bot.get_response(user_input)
+    bot_response=str(bot_response)
+    with open("Output.txt", "w") as text_file:
+        text_file.write(bot_response)
+    return render_template('index.html',user_input=user_input,
 		bot_response=bot_response
 		)
 
@@ -91,3 +97,19 @@ def result_db():
     output_data = pd.read_csv("db.csv")
     output_json = output_data.to_json(orient='table',index=False)
     return output_json
+
+@app.route('/chat')
+def chat():
+	return render_template('chat.html')
+
+@app.route('/chat_process',methods=['POST'])
+def chat_process():
+    user_input=request.form['user_input']
+    r = requests.get(
+        f'http://127.0.0.1:8000/chatbot/{user_input}'
+        )
+    data = r.json()
+    bot_response=str(data)
+    return render_template('chat.html',user_input=user_input,
+		bot_response=bot_response
+		)
