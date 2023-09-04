@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer, ChatterBotCorpusTrainer
-from app.form import RecipeForm
+from app.query.form import RecipeForm
 from initial_test import Recipes, check_if_ingredient
 from constants import const
 import pandas as pd

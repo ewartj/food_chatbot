@@ -10,10 +10,10 @@
     <hr>
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="{{ url_for('index') }}">Recipe query</a>
+            <a class="navbar-brand" href="{{ url_for('intro.index') }}">Recipe query</a>
             <div>
-              <a href="{{ url_for('recipe') }}" style="color: #00FF00;">Search</a> ||
-              <a href="{{ url_for('chat') }}" style="color: #00FF00;">Chat</a>
+              <a href="{{ url_for('query.recipe') }}" style="color: #00FF00;">Search</a> ||
+              <a href="{{ url_for('chat.chat') }}" style="color: #00FF00;">Chat</a>
             </div>
           </nav>
         {% block content %}{% endblock %} 
