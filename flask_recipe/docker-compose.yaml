@@ -4,7 +4,7 @@ networks:
 
 services:
   api_large:
-    image: api_large
+    image: ejsheldon/api_large:0.0.1 
     environment:
       APP_PORT: "8000"
     ports:
@@ -13,7 +13,7 @@ services:
       - chatbot-network
   
   api_intro:
-    image: api_intro
+    image: ejsheldon/api_small:0.1.0 
     environment:
       APP_PORT: "5050"
     ports:
@@ -23,7 +23,7 @@ services:
 
     # network_mode: host
   chatbot_flask:
-    image: chatbot_flask
+    image: ejsheldon/chatbot_flask:0.1.0
     ports:
       - 5000:5000
     networks:
