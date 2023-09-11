@@ -1,7 +1,6 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI
 import uvicorn
+import os
 from chatterbot import ChatBot
 from chatterbot.trainers import ChatterBotCorpusTrainer
 
@@ -17,4 +16,4 @@ async def input(query: str):
     return str(english_bot.get_response(query))
 
 if __name__ == "__main__":
-    uvicorn.run("main:app")
+    uvicorn.run("main:app", port=int(os.getenv('APP_PORT')), host='0.0.0.0')
