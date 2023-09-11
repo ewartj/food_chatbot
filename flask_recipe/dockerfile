@@ -1,0 +1,29 @@
+FROM python:3.8.10
+
+RUN useradd chatbot
+
+WORKDIR /home/chatbot
+
+RUN apt-get -y update
+RUN apt-get -y install git
+
+COPY requirements.txt .flaskenv config.py constants.py /home/chatbot/
+COPY foodbert foodbert
+RUN pip install -r requirements.txt
+WORKDIR /home/chatbot/foodbert/
+RUN pip install -e .
+WORKDIR /home/chatbot
+RUN pip install gunicorn
+
+
+COPY app app
+COPY chatbot_flask.py config.py boot.sh ./
+RUN chmod +x boot.sh
+
+ENV FLASK_APP chatbot_flask.py
+
+RUN chown -R chatbot:chatbot ./
+USER chatbot
+
+EXPOSE 5000
+ENTRYPOINT ["./boot.sh"]

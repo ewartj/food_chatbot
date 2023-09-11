@@ -1,0 +1,22 @@
+FROM python:3.8-slim
+
+RUN useradd chatbot
+
+WORKDIR /home/chatbot
+
+COPY requirements.txt requirements.txt
+COPY main.py main.py
+
+RUN apt-get update -q \
+    && apt-get install -y gcc \
+    g++ \
+    git
+
+RUN pip install -r requirements.txt
+RUN pip install git+https://github.com/gunthercox/chatterbot-corpus.git#egg=chatterbot-corpus
+
+
+COPY main.py main.py
+RUN chmod +x main.py
+
+CMD [ "python", "./main.py" ]

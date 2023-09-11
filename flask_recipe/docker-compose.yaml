@@ -1,0 +1,31 @@
+networks:
+  chatbot-network:
+    driver: bridge
+
+services:
+  api_large:
+    image: api_large
+    environment:
+      APP_PORT: "8000"
+    ports:
+      - 8000:8000
+    networks:
+      - chatbot-network
+  
+  api_intro:
+    image: api_intro
+    environment:
+      APP_PORT: "5050"
+    ports:
+      - 5050:5050
+    networks:
+      - chatbot-network
+
+    # network_mode: host
+  chatbot_flask:
+    image: chatbot_flask
+    ports:
+      - 5000:5000
+    networks:
+      - chatbot-network
+    
