@@ -26,6 +26,12 @@ def recipe():
             "recipe.ingredientLines","recipe.cuisineType",
             "recipe.mealType","recipe.dishType"]]
             output_data.rename(columns=lambda x: x.replace("recipe.",""), inplace=True)
+            output_data['cautions'] = output_data['cautions'].str[0]
+            output_data['cuisineType'] = output_data['cuisineType'].str[0]
+            output_data['mealType'] = output_data['mealType'].str[0]
+            output_data['dishType'] = output_data['dishType'].str[0]
+            output_data['ingredients'] = [','.join(map(str, l)) for l in output_data['ingredientLines']]
+            # output_data['ingredientLines'] = output_data['ingredientLines'].str.strip('[]').astype(int)
             output_data.reset_index(inplace=True)
             output_data.to_csv("db.csv")
             return redirect(url_for('query.result'))
