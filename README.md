@@ -14,3 +14,5 @@ git clone git@github.com:chambliss/foodbert.git
 cd foodbert
 pip install -e .
 ```
+
+This can be run using `docker-compose.yaml` and they can be foudn on [dockerhub](https://hub.docker.com/repositories/ejsheldon): [flask app])https://hub.docker.com/repository/docker/ejsheldon/chatbot_flask/general), [small_api](https://hub.docker.com/repository/docker/ejsheldon/api_small/general), and [large_api](https://hub.docker.com/repository/docker/ejsheldon/api_large/general).
